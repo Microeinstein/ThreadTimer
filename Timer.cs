@@ -9,7 +9,7 @@ namespace Micro.ThreadTimer {
         public event Action Tick;
 
         public bool Running {
-            get { return runn; }
+            get => runn;
             set {
                 if (value != runn) {
                     if (value) {
@@ -32,12 +32,8 @@ namespace Micro.ThreadTimer {
             Intervall = intervall;
             Running = running;
         }
-        public void start() {
-            Running = true;
-        }
-        public void stop() {
-            Running = false;
-        }
+        public void start() => Running = true;
+        public void stop()  => Running = false;
 
         private void background(object sender, DoWorkEventArgs e) {
             while (!e.Cancel) {

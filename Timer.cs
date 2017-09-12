@@ -1,45 +1,66 @@
 ﻿using System;
-using System.ComponentModel;
+//using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
+//using System.Timers;
 
 namespace Micro.ThreadTimer {
-    public class Timer {
-        private BackgroundWorker backWork;
-        private bool runn;
+    public class Clock {
         public event Action Tick;
+        public int Intervall;
+        bool _running;
+        Timer background;
+        
+        public bool Running => _running;
 
-        public bool Running {
-            get => runn;
-            set {
-                if (value != runn) {
-                    if (value) {
-                        backWork = new BackgroundWorker();
-                        backWork.WorkerSupportsCancellation = true;
-                        backWork.DoWork += new DoWorkEventHandler(background);
-                        backWork.RunWorkerAsync();
-                    } else {
-                        backWork.CancelAsync();
-                        backWork.Dispose();
-                        backWork = null;
-                    }
-                    runn = value;
-                }
-            }
-        }
-        public int Intervall { get; set; }
-
-        public Timer(int intervall, bool running = false) {
+        public Clock(int intervall, Action tick) {
             Intervall = intervall;
-            Running = running;
+            Tick += tick;
+            //background = new Timer(Intervall);
+            //background.Elapsed += (a, b) => work(a);
         }
-        public void start() => Running = true;
-        public void stop()  => Running = false;
+        public void Start() {
+            if (_running)
+                return;
+            lock (this) {
+                _running = true;
 
-        private void background(object sender, DoWorkEventArgs e) {
-            while (!e.Cancel) {
-                Thread.Sleep(Intervall);
-                Tick();
+                //backWork = new BackgroundWorker();
+                //backWork.WorkerSupportsCancellation = true;
+                //backWork.DoWork += bgHandler;
+                //backWork.RunWorkerAsync();
+
+                background = new Timer(work, null, Intervall, Intervall);
+
+                //background.Start();
+
+                //bg = job();
             }
+        }
+        public void Stop() {
+            if (!_running)
+                return;
+            lock (this) {
+                _running = false;
+                //backWork.DoWork -= bgHandler;
+                //backWork.CancelAsync();
+                //backWork.Dispose();
+                //backWork = null;
+
+                background.Dispose();
+                background = null;
+
+                //background.Stop();
+
+                //bg?.Wait();
+                //bg = null;
+            }
+        }
+
+        void work(object a) {
+            if (_running)
+                Tick?.Invoke();
         }
     }
 }

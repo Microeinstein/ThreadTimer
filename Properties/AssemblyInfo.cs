@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ThreadTimer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microeinstein")]
+[assembly: AssemblyCompany("Micro")]
 [assembly: AssemblyProduct("ThreadTimer")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]

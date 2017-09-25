@@ -5,11 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 //using System.Timers;
 
-namespace Micro.ThreadTimer {
+namespace Micro.Utils{
     public class Clock {
         public event Action Tick;
         public int Intervall;
-        bool _running;
+        bool _running, highset;
         Timer background;
         
         public bool Running => _running;
@@ -31,6 +31,7 @@ namespace Micro.ThreadTimer {
                 //backWork.DoWork += bgHandler;
                 //backWork.RunWorkerAsync();
 
+                highset = false;
                 background = new Timer(work, null, Intervall, Intervall);
 
                 //background.Start();
@@ -59,6 +60,10 @@ namespace Micro.ThreadTimer {
         }
 
         void work(object a) {
+            if (!highset) {
+                Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
+                highset = true;
+            }
             if (_running)
                 Tick?.Invoke();
         }

@@ -1,2 +1,2 @@
 # ThreadTimer
-My C# simple timer (.NET 4.0)
+My simple C# timer (.NET 4.0)
